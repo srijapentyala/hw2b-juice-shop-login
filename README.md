@@ -10,7 +10,7 @@ Both the browser and the server reject the login when:
 - the email does not contain `@`
 - the password is shorter than 8 characters
 
-The server stores only a PBKDF2 hash of the demo password. It compares that hash in constant time. User input is never placed into a SQL string or into HTML.
+The server stores only a PBKDF2 hash of the demo password. It compares that hash in constant time. User input is never placed into a SQL string. The page shows the submitted email on the result line.
 
 ## Run it
 
