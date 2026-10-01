@@ -35,6 +35,10 @@ The status text is safe. The submitted email is not: `login.js` assigns it with 
 
 The repair is to assign that line with `textContent`, and to send `Content-Security-Policy: script-src 'self'` so an inline handler cannot run even if a later change inserts one.
 
+## Write-up
+
+[HW2B-OWASP-Juice-Shop.pdf](submission/HW2B-OWASP-Juice-Shop.pdf) is the homework document: the Juice Shop findings, this form, and the attack notes. The screenshots in that PDF are in [`submission/`](submission/).
+
 ## Files
 
 | File | What it owns |
