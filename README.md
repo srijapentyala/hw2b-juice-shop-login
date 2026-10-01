@@ -1,52 +1,45 @@
 # Juice Shop-style login form
 
-A small login page modeled on the OWASP Juice Shop login screen. It is the front-end piece of a web-security homework assignment. The page asks for an email and a password, checks them in the browser, and sends them to a Python server that checks them again.
+A login page built in the shape of [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/): an email, a password, and a Log in button. The browser checks the fields first. A small Python server checks them again and compares the password with a stored hash.
 
-There is no database. Nothing the user types is concatenated into a SQL string.
+This is the front end for a web-security assignment. It is deliberately small so the checks, the password comparison, and one unsafe display of the email are easy to follow.
 
-## Requirements
+## Run
 
-Python 3.11 or newer. No packages to install.
-
-## Run it
-
-From this directory:
+Python 3.11 or newer. Nothing to install.
 
 ```bash
 python3 server.py
 ```
 
-Open [http://127.0.0.1:8080](http://127.0.0.1:8080). The server listens on `127.0.0.1` only. Stop it with Ctrl+C.
+Open [http://127.0.0.1:8080](http://127.0.0.1:8080). The process binds to localhost only. Ctrl+C stops it.
 
-## Demo account
+Sign in with `demo@juice-sh.op` / `JuiceShop1`. A match prints **Logged in.** in green. Any other pair that is well formed prints **Invalid email or password.** An unknown account and a wrong password get the same sentence, so the form does not reveal which one failed.
 
-| Email | Password |
-| --- | --- |
-| `demo@juice-sh.op` | `JuiceShop1` |
+## What happens on Log in
 
-A correct login shows **Logged in.** in green. Any other email and password that pass the format checks show **Invalid email or password.** The server answers with the same message for an unknown email and a wrong password.
+1. `login.js` refuses an empty email or password, an email without a real `@`, and a password shorter than 8 characters. Those errors never leave the browser.
+2. Anything that passes is sent as JSON to `POST /login`.
+3. `server.py` repeats the same three checks. A bad format is HTTP 400. A format that is fine but does not match the demo account is HTTP 401.
+4. The status line is set as text. The line under it is the email the browser sent, written with `innerHTML`.
 
-The demo password is not stored in the source. `server.py` keeps a PBKDF2-HMAC-SHA256 hash and a salt, and compares the candidate with `hmac.compare_digest`.
+There is no database. The email and password are never pasted into a query.
 
-## What it checks
+## Password check
 
-`login.js` rejects the form before it is sent when:
+The demo password does not appear as a string next to the comparison. `server.py` stores a salt and a PBKDF2-HMAC-SHA256 hash (200,000 rounds) and checks the attempt with `hmac.compare_digest`, so the comparison does not stop at the first differing byte.
 
-- the email or the password is empty
-- the email does not contain `@`, or `@` is the first or last character
-- the password is shorter than 8 characters
+## The result line
 
-`server.py` repeats those three checks on `POST /login`. A request that fails them gets HTTP 400. A request that passes them but does not match the demo account gets HTTP 401.
+The status text is safe. The submitted email is not: `login.js` assigns it with `innerHTML`, so markup in the email is parsed as HTML. That is the weakness the write-up exploits.
 
-## What the page shows
-
-After a request reaches the server, the status line is plain text. The line under it is the submitted email, inserted with `innerHTML` in `login.js`. That is the behavior exercised in the homework write-up.
+The repair is to assign that line with `textContent`, and to send `Content-Security-Policy: script-src 'self'` so an inline handler cannot run even if a later change inserts one.
 
 ## Files
 
-| File | Role |
+| File | What it owns |
 | --- | --- |
-| `index.html` | Login form: email, password, and the Log in button |
-| `login.js` | Client-side checks and the submit handler |
-| `styles.css` | Page layout |
-| `server.py` | Static files, the repeated checks, and the password comparison |
+| `index.html` | The form |
+| `login.js` | The browser checks and the submit handler |
+| `styles.css` | Layout |
+| `server.py` | The pages, the repeated checks, and the hash comparison |
