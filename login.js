@@ -39,5 +39,5 @@ form.addEventListener("submit", async (event) => {
   });
   const data = await response.json();
   show(data.message, data.ok);
-  submitted.innerHTML = "Submitted email: " + email;
+  submitted.textContent = "Submitted email: " + email;
 });
