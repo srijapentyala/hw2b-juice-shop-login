@@ -8,6 +8,21 @@ A login page built in the shape of [OWASP Juice Shop](https://owasp.org/www-proj
 
 This is the front end for a web-security assignment. It is deliberately small so the checks, the password comparison, and one unsafe display of the email are easy to follow.
 
+## What it does
+
+This repository is a local login page. It is not a copy of Juice Shop. Juice Shop is the application studied in the write-up. This page copies only the shape of its login screen.
+
+Opening [http://127.0.0.1:8080](http://127.0.0.1:8080) shows one form. Submitting it does the following:
+
+- The browser rejects a blank email or password, an email without a real `@`, and a password shorter than 8 characters. Those messages stay on the page, and no request is sent.
+- A form that passes is posted as JSON to `POST /login`.
+- The server repeats the same three checks. A client can skip `login.js`, so the server does not trust the browser. A bad format is HTTP 400.
+- The only account is `demo@juice-sh.op`. The password is not stored. The server keeps a salt and a PBKDF2-HMAC-SHA256 hash (200,000 rounds) and compares the attempt with `hmac.compare_digest`, which does not stop at the first differing byte.
+- A match shows **Logged in.** in green. Any other well-formed pair shows **Invalid email or password.** An unknown email and a wrong password get that same sentence, so the form does not reveal which one failed.
+- The email is then printed under the button. The status line is plain text. The email line is assigned with `innerHTML`, so a tag in the email is parsed as HTML. The write-up uses that line to show a cross-site scripting result and records the repair: assign it with `textContent`, and send `Content-Security-Policy: script-src 'self'`.
+
+The server listens on `127.0.0.1` only. It has no database, never places the email or password into a SQL string, and rejects a body larger than 4096 bytes. There is no registration and no second account.
+
 ## Run
 
 Python 3.11 or newer. Nothing to install.
