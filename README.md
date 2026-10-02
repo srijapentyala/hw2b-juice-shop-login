@@ -56,7 +56,7 @@ The repair is to assign that line with `textContent`, and to send `Content-Secur
 
 ## Write-up
 
-[HW2B-OWASP-Juice-Shop.pdf](submission/HW2B-OWASP-Juice-Shop.pdf) is the homework document: the Juice Shop findings, this form, and the attack notes. The screenshots in that PDF are in [`submission/`](submission/).
+[937006978_HW2B-OWASP-Juice-Shop.pdf](submission/937006978_HW2B-OWASP-Juice-Shop.pdf) is the homework document: the Juice Shop findings, this form, and the attack notes. The screenshots in that PDF are in [`submission/`](submission/).
 
 ## Files
 
