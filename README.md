@@ -1,6 +1,8 @@
 # Juice Shop-style login form
 
-Course CSCE 703. UIN 937006978. Email srijapentyala@tamu.edu.
+Course CSCE 703
+UIN 937006978
+Email srijapentyala@tamu.edu.
 
 A login page built in the shape of [OWASP Juice Shop](https://owasp.org/www-project-juice-shop/): an email, a password, and a Log in button. The browser checks the fields first. A small Python server checks them again and compares the password with a stored hash.
 
